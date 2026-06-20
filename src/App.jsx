@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Home, ShieldCheck, Plus, ArrowUpCircle } from 'lucide-react';
+import { Home, ShieldCheck, Plus, ArrowUpCircle, Laugh } from 'lucide-react';
+import JokeGenerator from './JokeGenerator';
 
 const generateHouses = () => {
   const houses = [];
@@ -126,10 +127,10 @@ export default function App() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-2 p-4 bg-white border-b sticky top-0 z-10">
+      <div className="flex gap-2 p-4 bg-white border-b sticky top-0 z-10 overflow-x-auto">
         <button
           onClick={() => setActiveTab('pemasukan')}
-          className={`flex items-center gap-2 px-4 py-2 rounded font-bold ${
+          className={`flex items-center gap-2 px-4 py-2 rounded font-bold whitespace-nowrap ${
             activeTab === 'pemasukan' 
               ? 'bg-emerald-600 text-white' 
               : 'bg-gray-200 text-gray-800'
@@ -139,7 +140,7 @@ export default function App() {
         </button>
         <button
           onClick={() => setActiveTab('pengeluaran')}
-          className={`flex items-center gap-2 px-4 py-2 rounded font-bold ${
+          className={`flex items-center gap-2 px-4 py-2 rounded font-bold whitespace-nowrap ${
             activeTab === 'pengeluaran' 
               ? 'bg-emerald-600 text-white' 
               : 'bg-gray-200 text-gray-800'
@@ -147,25 +148,37 @@ export default function App() {
         >
           <ArrowUpCircle size={18} /> Pengeluaran
         </button>
+        <button
+          onClick={() => setActiveTab('jokes')}
+          className={`flex items-center gap-2 px-4 py-2 rounded font-bold whitespace-nowrap ${
+            activeTab === 'jokes' 
+              ? 'bg-purple-600 text-white' 
+              : 'bg-gray-200 text-gray-800'
+          }`}
+        >
+          <Laugh size={18} /> Jokes
+        </button>
       </div>
 
-      {/* Year & Month Selector */}
-      <div className="p-4 bg-white border-b flex gap-4 items-center justify-center">
-        <select 
-          value={selectedYear} 
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-          className="p-2 border rounded font-bold"
-        >
-          {[2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-        </select>
-        <select 
-          value={selectedMonth} 
-          onChange={(e) => setSelectedMonth(Number(e.target.value))}
-          className="p-2 border rounded font-bold"
-        >
-          {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
-        </select>
-      </div>
+      {/* Year & Month Selector - Hanya tampil untuk tab pemasukan & pengeluaran */}
+      {(activeTab === 'pemasukan' || activeTab === 'pengeluaran') && (
+        <div className="p-4 bg-white border-b flex gap-4 items-center justify-center">
+          <select 
+            value={selectedYear} 
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="p-2 border rounded font-bold"
+          >
+            {[2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+          <select 
+            value={selectedMonth} 
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            className="p-2 border rounded font-bold"
+          >
+            {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+          </select>
+        </div>
+      )}
 
       <main className="p-4 max-w-6xl mx-auto">
         {activeTab === 'pemasukan' && (
@@ -285,7 +298,15 @@ export default function App() {
           </div>
         )}
 
-        <p className="text-center text-xs text-gray-400 mt-8">💾 Data disimpan otomatis di perangkat ini (localStorage)</p>
+        {activeTab === 'jokes' && (
+          <div>
+            <JokeGenerator />
+          </div>
+        )}
+
+        {(activeTab === 'pemasukan' || activeTab === 'pengeluaran') && (
+          <p className="text-center text-xs text-gray-400 mt-8">💾 Data disimpan otomatis di perangkat ini (localStorage)</p>
+        )}
       </main>
     </div>
   );
